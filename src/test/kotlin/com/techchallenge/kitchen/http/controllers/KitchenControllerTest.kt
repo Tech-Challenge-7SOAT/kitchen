@@ -1,5 +1,9 @@
 package com.techchallenge.kitchen.http.controllers
 
+import com.techchallenge.kitchen.domain.Preparation
+import com.techchallenge.kitchen.services.KitchenService
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.DisplayName
@@ -21,8 +25,13 @@ class KitchenControllerTest @Autowired constructor(val mockMvc: MockMvc) {
     @TestInstance(Lifecycle.PER_CLASS)
     inner class GetOrder {
 
+        private val service: KitchenService = mockk(relaxed = true)
+
         @Test
         fun `should return OK when order exists`() {
+
+            every { service.find("1") } returns Preparation("1", "2021-08-01T12:00:00Z", "PENDING")
+
             mockMvc.get("/1")
                 .andExpect {
                     status { isOk() }
@@ -31,6 +40,9 @@ class KitchenControllerTest @Autowired constructor(val mockMvc: MockMvc) {
 
         @Test
         fun `should return 404 when order does not exist`() {
+
+            every { service.find("does-not-exist") } returns null
+
             mockMvc.get("/does-not-exist")
                 .andExpect {
                     status { isNotFound() }
