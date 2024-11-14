@@ -13,7 +13,7 @@ data class Preparation(
     @Column(name = "id", nullable = false)
     var id: Long? = null,
     val orderId: String,
-    val dueData: String,
+    val dueDate: String,
     val status: String
 ) {
     final override fun equals(other: Any?): Boolean {
