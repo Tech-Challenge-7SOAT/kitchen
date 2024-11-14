@@ -18,7 +18,9 @@ import org.springframework.test.web.servlet.get
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class KitchenControllerTest @Autowired constructor(val mockMvc: MockMvc) {
+internal class KitchenControllerTest @Autowired constructor(
+    private val mockMvc: MockMvc
+) {
 
     @Nested
     @DisplayName("GET /{orderId}")
@@ -30,7 +32,7 @@ class KitchenControllerTest @Autowired constructor(val mockMvc: MockMvc) {
         @Test
         fun `should return OK when order exists`() {
 
-            every { service.find("1") } returns Preparation("1", "2021-08-01T12:00:00Z", "PENDING")
+            every { service.find("1") } returns Preparation(1L, "1", "2021-08-01T12:00:00Z", "PENDING")
 
             mockMvc.get("/1")
                 .andExpect {
@@ -41,7 +43,7 @@ class KitchenControllerTest @Autowired constructor(val mockMvc: MockMvc) {
         @Test
         fun `should return 404 when order does not exist`() {
 
-            every { service.find("does-not-exist") } returns null
+            every { service.find("does-not-exist") } throws NoSuchElementException("Preparation not found")
 
             mockMvc.get("/does-not-exist")
                 .andExpect {
