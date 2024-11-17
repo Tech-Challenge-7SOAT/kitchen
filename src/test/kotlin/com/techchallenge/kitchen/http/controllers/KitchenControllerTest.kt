@@ -1,9 +1,11 @@
 package com.techchallenge.kitchen.http.controllers
 
 import com.techchallenge.kitchen.domain.Preparation
+import com.techchallenge.kitchen.repositories.PreparationRepository
 import com.techchallenge.kitchen.services.KitchenService
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.DisplayName
@@ -17,24 +19,27 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class KitchenControllerTest @Autowired constructor(
-    private val mockMvc: MockMvc
+    private val mockMvc: MockMvc,
+    private val repository: PreparationRepository
 ) {
+
+    @BeforeEach
+    fun setUp() = repository.deleteAll()
 
     @Nested
     @DisplayName("GET /{orderId}")
     @TestInstance(Lifecycle.PER_CLASS)
     inner class GetOrder {
 
-        private val service: KitchenService = mockk(relaxed = true)
-
         @Test
         fun `should return OK when order exists`() {
 
-            every { service.find("1") } returns Preparation(1L, "1", "2021-08-01T12:00:00Z", "PENDING")
+            repository.save(Preparation(1L, "1", "2021-08-01T12:00:00Z", "PENDING"))
 
             mockMvc.get("/1")
                 .andExpect {
@@ -44,8 +49,6 @@ internal class KitchenControllerTest @Autowired constructor(
 
         @Test
         fun `should return 404 when order does not exist`() {
-
-            every { service.find("does-not-exist") } throws NoSuchElementException("Preparation not found")
 
             mockMvc.get("/does-not-exist")
                 .andExpect {
@@ -59,12 +62,8 @@ internal class KitchenControllerTest @Autowired constructor(
     @TestInstance(Lifecycle.PER_CLASS)
     inner class PostOrder {
 
-        private val service: KitchenService = mockk(relaxed = true)
-
         @Test
         fun `should return OK when order is stored`() {
-
-            every { service.store("1", "2021-08-01T12:00:00Z", "PENDING") } returns Preparation(1L, "1", "2021-08-01T12:00:00Z", "PENDING")
 
             val performPost = mockMvc.post("/") {
                 contentType = MediaType.APPLICATION_JSON
@@ -72,6 +71,29 @@ internal class KitchenControllerTest @Autowired constructor(
             }
 
             performPost.andExpect {
+                status { isOk() }
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("PUT /{orderId}")
+    @TestInstance(Lifecycle.PER_CLASS)
+    inner class PutOrder {
+
+        private val service: KitchenService = mockk(relaxed = true)
+
+        @Test
+        fun `should return OK when order is updated`() {
+
+            repository.save(repository.save(Preparation(1L, "1", "2021-08-01T12:00:00Z", "PENDING")))
+
+            val performPut = mockMvc.put("/1") {
+                contentType = MediaType.APPLICATION_JSON
+                content = """{ "orderId": "1", "dueDate": "2021-08-01T12:00:00Z", "status": "PENDING" }"""
+            }
+
+            performPut.andExpect {
                 status { isOk() }
             }
         }

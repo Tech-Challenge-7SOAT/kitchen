@@ -11,4 +11,10 @@ class KitchenService(private val repository: PreparationRepository) {
 
     fun store(orderId: String, dueDate: String, status: String) =
         repository.save(Preparation(orderId = orderId, dueDate = dueDate, status = status))
+
+    fun update(orderId: String, dueDate: String, status: String) {
+        repository.findByOrderId(orderId)?.let {
+            repository.save(it.copy(dueDate = dueDate, status = status))
+        }
+    }
 }

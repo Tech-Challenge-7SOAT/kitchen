@@ -19,4 +19,8 @@ class KitchenController(private val service: KitchenService) {
     @PostMapping("/")
     fun store(@RequestBody request: PreparationRequest) =
         service.store(request.orderId, request.dueDate, request.status)
+
+    @PutMapping("/{orderId}")
+    fun update(@PathVariable orderId: String, @RequestBody request: PreparationRequest) =
+        service.update(orderId, request.dueDate, request.status)
 }
