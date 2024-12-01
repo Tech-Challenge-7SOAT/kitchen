@@ -3,7 +3,6 @@ package com.techchallenge.kitchen.http.controllers
 import com.techchallenge.kitchen.domain.Preparation
 import com.techchallenge.kitchen.repositories.PreparationRepository
 import com.techchallenge.kitchen.services.KitchenService
-import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
