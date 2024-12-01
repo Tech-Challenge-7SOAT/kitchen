@@ -61,7 +61,6 @@ tasks.jacocoTestReport {
     reports {
         xml.required = true
         csv.required = false
-        html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
     }
     classDirectories.setFrom(
         files(classDirectories.files.map {
@@ -97,11 +96,19 @@ tasks.jacocoTestCoverageVerification {
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "Tech-Challenge-7SOAT_payments")
+        property("sonar.sourceEncoding", "UTF-8")
+        property("sonar.sources", "src/main/kotlin")
+        property("sonar.tests", "src/test/kotlin")
+        property("sonar.projectKey", "Tech-Challenge-7SOAT_kitchen")
         property("sonar.organization", "tech-challenge-7soat")
-        property("sonar.host.url", "https://sonarcloud.io/project/overview?id=Tech-Challenge-7SOAT_payments")
+        property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.login", System.getenv("SONAR_TOKEN"))
-        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get().asFile}/reports/jacoco/test/jacocoTestReport.xml")
+
+        property("sonar.verbose", "true")
     }
 }
 
+tasks.sonarqube {
+    dependsOn(tasks.jacocoTestReport)
+}
