@@ -1,36 +1,36 @@
- name: SonarQube Analysis
+name: SonarQube Analysis
 
- on:
-   push:
-     branches:
-       - feature/*
+on:
+  push:
+    branches:
+      - main
 
- jobs:
-   sonar-analysis:
-     runs-on: ubuntu-latest
+jobs:
+  sonar-analysis:
+    runs-on: ubuntu-latest
 
-     steps:
-       - name: Checkout code
-         uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-       - name: Set up JDK 21
-         uses: actions/setup-java@v3
-         with:
-           java-version: 21
-           distribution: temurin
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: 21
+          distribution: temurin
 
-       - name: Cache Gradle packages
-         uses: actions/cache@v3
-         with:
-           path: ~/.gradle/caches
-           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-           restore-keys: |
-             ${{ runner.os }}-gradle-
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-       - name: Build and Test with JaCoCo
-         run: ./gradlew clean build jacocoTestReport
+      - name: Build and Test with JaCoCo
+        run: ./gradlew clean build jacocoTestReport
 
-       - name: SonarQube Scan
-         env:
-           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-         run: ./gradlew sonarqube --info --warning-mode all
+      - name: SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonarqube --info --warning-mode all
