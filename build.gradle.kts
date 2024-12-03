@@ -69,6 +69,7 @@ tasks.jacocoTestReport {
                 exclude("**/domain/**")
                 exclude("**/http/requests/**")
                 exclude("**/http/responses/**")
+                exclude("**/test/**")
             }
         })
     )
