@@ -67,6 +67,8 @@ tasks.jacocoTestReport {
             fileTree(it) {
                 exclude("**/repositories/**")
                 exclude("**/domain/**")
+                exclude("**/http/requests/**")
+                exclude("**/http/responses/**")
             }
         })
     )
