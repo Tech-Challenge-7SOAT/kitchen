@@ -34,6 +34,10 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("com.h2database:h2:2.3.232")
 
+    testImplementation("io.cucumber:cucumber-java:7.20.1")
+    testImplementation("io.cucumber:cucumber-junit:7.20.1")
+    testImplementation("org.junit.platform:junit-platform-suite-api:1.9.3")
+    testImplementation("io.rest-assured:rest-assured:5.5.0")
 }
 
 kotlin {
