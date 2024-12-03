@@ -15,6 +15,6 @@ class KitchenService(private val repository: PreparationRepository) {
     fun update(orderId: String, dueDate: String, status: String) {
         repository.findByOrderId(orderId)?.let {
             repository.save(it.copy(dueDate = dueDate, status = status))
-        }
+        } ?: throw NoSuchElementException("Preparation not found")
     }
 }
