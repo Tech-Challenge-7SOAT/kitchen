@@ -8,7 +8,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.web.context.WebApplicationContext
 
 @ContextConfiguration(classes = [KitchenApplication::class])
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class KitchenApplicationTests {
 
     @Autowired

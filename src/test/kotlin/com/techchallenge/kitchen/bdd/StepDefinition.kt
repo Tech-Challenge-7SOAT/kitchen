@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
+import java.util.UUID
 
 @ContextConfiguration
 @SpringBootTest(classes = [KitchenApplication::class], webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -21,10 +22,11 @@ class StepDefinition {
     private lateinit var response: Response
     private lateinit var preparationResponse: Preparation
     private val ENDPOINT_API = "http://localhost:8081/"
+    private val randomOrderId = UUID.randomUUID().toString()
 
     @Dado("que o usuário tenha um preparo registrado")
     fun `que o usuario tenha um preparo registrado`() {
-        val request = PreparationRequest(orderId = "1", dueDate = "2022-12-31T23:59:59", status = "CONFIRMED")
+        val request = PreparationRequest(orderId = randomOrderId, dueDate = "2022-12-31T23:59:59", status = "CONFIRMED")
         preparationResponse = given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
@@ -39,7 +41,7 @@ class StepDefinition {
     fun `o usuario busca o preparo por ID de pedido`() {
         response = given()
             .`when`()
-            .get(ENDPOINT_API + "1")
+            .get(ENDPOINT_API + randomOrderId)
     }
 
     @Entao("o usuário deve visualizar o preparo")
@@ -49,7 +51,7 @@ class StepDefinition {
     fun `o usuario busca o preparo por ID de pedido inexistente`() {
         response = given()
             .`when`()
-            .get(ENDPOINT_API + "2")
+            .get(ENDPOINT_API + UUID.randomUUID().toString())
     }
 
     @Entao("o usuário deve visualizar a mensagem de erro")
@@ -66,7 +68,7 @@ class StepDefinition {
     }
 
     @Entao("o usuário deve visualizar o preparo do pedido")
-    fun `o usuario deve visualizar o preparo do pedido`() = response.then().statusCode(201)
+    fun `o usuario deve visualizar o preparo do pedido`() = response.then().statusCode(200)
 
     @Quando("o usuário atualiza o status do preparo")
     fun `o usuario atualiza o status do preparo`() {
@@ -75,7 +77,7 @@ class StepDefinition {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
             .`when`()
-            .put(ENDPOINT_API + "1")
+            .put(ENDPOINT_API + randomOrderId)
     }
 
     @Entao("o usuário deve visualizar o status do preparo atualizado")
