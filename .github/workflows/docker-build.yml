@@ -31,4 +31,4 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: 891376946404.dkr.ecr.us-east-1.amazonaws.com/fastfood-api-kitchen:latest
+          tags: 692348767810.dkr.ecr.us-east-1.amazonaws.com/fastfood-api-kitchen:latest
